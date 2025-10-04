@@ -69,12 +69,22 @@ jobs:
     - name: Build package
       run: python -m build
     
+    - name: Debug OIDC claims
+      run: |
+        echo "Repository: ${{ github.repository }}"
+        echo "Repository owner: ${{ github.repository_owner }}"
+        echo "Workflow: ${{ github.workflow }}"
+        echo "Job: ${{ github.job }}"
+        echo "Run ID: ${{ github.run_id }}"
+        echo "Ref: ${{ github.ref }}"
+    
     - name: Publish to Test PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         repository-url: https://test.pypi.org/legacy/
         skip-existing: true  # Skip if version already exists
-        # Using OIDC trusted publishing - no password needed
+        # Try OIDC first, fallback to API token if OIDC fails
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
     
     - name: Test installation from Test PyPI
       run: |
