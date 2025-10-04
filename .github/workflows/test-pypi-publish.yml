@@ -1,13 +1,13 @@
-name: Build and Publish to PyPI
+name: Test PyPI Publish
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [ main ]
   workflow_dispatch:
     inputs:
-      confirm:
-        description: 'Type "publish" to confirm production release'
-        required: true
+      version:
+        description: 'Version to test (optional - uses current version if not specified)'
+        required: false
         type: string
 
 jobs:
@@ -33,14 +33,13 @@ jobs:
     
     - name: Run tests
       run: |
-        # Add test commands here when tests are available
         python -m pytest tests/ || echo "No tests found, skipping"
     
     - name: Test CLI command
       run: |
         genpdf --help
 
-  build:
+  build-and-test-publish:
     needs: test
     runs-on: ubuntu-latest
     
@@ -57,32 +56,24 @@ jobs:
         python -m pip install --upgrade pip
         pip install build
     
+    - name: Update version for testing (if specified)
+      if: github.event.inputs.version != ''
+      run: |
+        sed -i 's/version = "[^"]*"/version = "${{ github.event.inputs.version }}"/' pyproject.toml
+        echo "Updated version to ${{ github.event.inputs.version }} for testing"
+    
     - name: Build package
       run: python -m build
     
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: dist
-        path: dist/
-
-  publish-pypi:
-    needs: build
-    runs-on: ubuntu-latest
-    if: |
-      (github.event_name == 'release' && github.event.action == 'published') ||
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.confirm == 'publish')
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Download build artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: dist
-        path: dist/
-    
-    - name: Publish to PyPI
+    - name: Publish to Test PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
+        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        repository-url: https://test.pypi.org/legacy/
+        skip-existing: true  # Skip if version already exists
+    
+    - name: Test installation from Test PyPI
+      run: |
+        sleep 30  # Wait for package to be available
+        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ genpdf-butler
+        genpdf --help
