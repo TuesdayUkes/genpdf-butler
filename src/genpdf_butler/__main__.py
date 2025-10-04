@@ -2,7 +2,6 @@ from genpdf_butler import PatchTextColor
 from genpdf_butler import GenPDF
 from git import Repo
 
-from posixpath import basename, splitext
 import sys
 import os
 import argparse

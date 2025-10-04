@@ -1,7 +1,5 @@
 from pathlib import Path
-from posixpath import basename, splitext
 import re
-import os
 
 
 def PatchColors():
@@ -11,9 +9,7 @@ def PatchColors():
     for p in Path("./").rglob("*.cho"):
         allFiles.append(p)
 
-    startColor = re.compile("textcolour: *\w+")
-    endColor = re.compile("textcolour *}")
-    onsongColor = re.compile("&blue:?")
+    onsongColor = re.compile(r"&blue:?")
 
     for p in allFiles:
         try:
@@ -22,22 +18,22 @@ def PatchColors():
 
             addColor = False
             with open(p, mode="w", encoding="utf-8") as f:
-                for l in srcLines:
-                    if not addColor and onsongColor.search(l):
+                for line in srcLines:
+                    if not addColor and onsongColor.search(line):
                         addColor = True
                         f.write("{textcolour: blue}\n")
-                    elif addColor and not onsongColor.search(l):
+                    elif addColor and not onsongColor.search(line):
                         addColor = False
                         f.write("{textcolour}\n")
 
                     if addColor:
-                        newL = re.sub(".?&blue:?/? *", "", l)
+                        newL = re.sub(".?&blue:?/? *", "", line)
                         f.write(newL)
                     else:
-                        f.write(l)
+                        f.write(line)
 
                 if addColor:
                     f.write("{textcolour}\n")
 
-        except:
-            print(f"failed on file {str(p)}")
+        except Exception as e:
+            print(f"failed on file {str(p)}: {e}")

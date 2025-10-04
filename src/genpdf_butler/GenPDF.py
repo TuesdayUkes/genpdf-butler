@@ -1,6 +1,5 @@
 import subprocess
 from pathlib import Path
-from posixpath import basename, splitext
 import os
 
 
@@ -25,8 +24,9 @@ def createPDFs(musicTarget, pagesize, showchords):
         "--chord-font=helvetica",
     ]
 
-    # lambda ext is like lambda l, except it returns the file extension
-    ext = lambda p: str(os.path.splitext(os.path.basename(p))[1]).lower()
+    # Function to get file extension
+    def ext(p):
+        return str(os.path.splitext(os.path.basename(p))[1]).lower()
 
     extensions = [".chopro", ".cho"]
     if os.path.exists(musicTarget):
