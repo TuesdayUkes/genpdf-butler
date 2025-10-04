@@ -1,10 +1,10 @@
-from genpdf_butler import PatchTextColor
-from genpdf_butler import GenPDF
+import argparse
+import os
+import sys
+
 from git import Repo
 
-import sys
-import os
-import argparse
+from genpdf_butler import GenPDF, PatchTextColor
 
 
 def main():
