@@ -28,7 +28,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
     
@@ -58,7 +58,7 @@ jobs:
       run: python -m build
     
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         tag_name: "v${{ github.event.inputs.version }}"
         name: "Release v${{ github.event.inputs.version }}"
