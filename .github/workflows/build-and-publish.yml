@@ -1,5 +1,9 @@
 name: Build and Publish to PyPI
 
+permissions:
+  id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+  contents: read
+
 on:
   release:
     types: [published]
@@ -84,5 +88,4 @@ jobs:
     
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        password: ${{ secrets.PYPI_API_TOKEN }}
+      # Using OIDC trusted publishing - no password needed

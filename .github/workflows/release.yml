@@ -1,5 +1,9 @@
 name: Release
 
+permissions:
+  id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+  contents: write  # Needed for creating releases and pushing commits/tags
+
 on:
   workflow_dispatch:
     inputs:
