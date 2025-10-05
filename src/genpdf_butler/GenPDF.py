@@ -31,7 +31,10 @@ def createPDFs(musicTarget, pagesize, showchords):
     extensions = [".chopro", ".cho"]
     if os.path.exists(musicTarget):
         if os.path.isdir(musicTarget):
-            print(f"Processing all .chopro and .cho files in directory '{musicTarget}'")
+            print(
+                f"Processing all .chopro and .cho files in directory "
+                f"'{musicTarget}'"
+            )
             for p in Path(musicTarget).rglob("*"):
                 print(f"Checking file: {p}")
                 if ext(p) in (extension.lower() for extension in extensions):
@@ -41,7 +44,9 @@ def createPDFs(musicTarget, pagesize, showchords):
                         chordproSettings + [f"--output={pdf_output}", str(p)]
                     )
         else:
-            if ext(musicTarget) in (extension.lower() for extension in extensions):
+            if ext(musicTarget) in (
+                extension.lower() for extension in extensions
+            ):
                 print(f"Processing single file '{musicTarget}'")
                 pdf_output = musicTarget.replace(ext(musicTarget), ".pdf")
                 subprocess.run(

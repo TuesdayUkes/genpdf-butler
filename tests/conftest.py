@@ -24,7 +24,7 @@ def sample_chopro_content():
         "With some &blue: colored text\n",
         "And normal text too\n",
         "More &blue text here\n",
-        "Back to normal\n"
+        "Back to normal\n",
     ]
 
 
@@ -37,27 +37,28 @@ def sample_cho_content():
         "\n",
         "G           C\n",
         "This is a test song\n",
-        "With normal text\n"
+        "With normal text\n",
     ]
 
 
 @pytest.fixture
 def create_test_files(temp_dir):
     """Factory fixture to create test files in temp directory."""
+
     def _create_files(files_dict):
         """Create files with given content.
-        
+
         Args:
             files_dict: Dict mapping filename to content list
-            
+
         Returns:
             List of Path objects for created files
         """
         created_files = []
         for filename, content in files_dict.items():
             file_path = temp_dir / filename
-            file_path.write_text(''.join(content), encoding='utf-8')
+            file_path.write_text("".join(content), encoding="utf-8")
             created_files.append(file_path)
         return created_files
-    
+
     return _create_files

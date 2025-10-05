@@ -40,7 +40,7 @@ def main():
     if dirty_chopro_files or untracked_chopro_files:
         print(
             "Cannot operate on a repo with .chopro/.cho changes -- "
-            + "commit, discard, or stash your .chopro/.cho changes and try again"
+            "commit, discard, or stash your .chopro/.cho changes and try again"
         )
         if dirty_chopro_files:
             print("Modified .chopro/.cho files:", dirty_chopro_files)
