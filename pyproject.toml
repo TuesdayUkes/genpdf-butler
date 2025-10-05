@@ -25,3 +25,6 @@ genpdf = "genpdf_butler.__main__:main"
 [project.urls]
 Homepage = "https://github.com/gdad78758/bluegrass"
 Issues = "https://github.com/gdad78758/bluegrass/issues"
+
+[tool.black]
+line-length = 79
