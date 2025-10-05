@@ -1,13 +1,30 @@
+import os
 import re
 from pathlib import Path
 
 
-def PatchColors():
+def PatchColors(musicTarget):
+    # Function to get file extension (same as in GenPDF.py)
+    def ext(p):
+        return str(os.path.splitext(os.path.basename(p))[1]).lower()
+
+    extensions = [".chopro", ".cho"]
     allFiles = []
-    for p in Path("./").rglob("*.chopro"):
-        allFiles.append(p)
-    for p in Path("./").rglob("*.cho"):
-        allFiles.append(p)
+    
+    if os.path.exists(musicTarget):
+        if os.path.isdir(musicTarget):
+            print(f"PatchColors: Processing all .chopro and .cho files in directory '{musicTarget}'")
+            for p in Path(musicTarget).rglob("*"):
+                if ext(p) in (extension.lower() for extension in extensions):
+                    allFiles.append(p)
+                    print(f"PatchColors: Found file to process: {p}")
+        else:
+            if ext(musicTarget) in (extension.lower() for extension in extensions):
+                allFiles.append(Path(musicTarget))
+                print(f"PatchColors: Processing single file '{musicTarget}'")
+    else:
+        print(f"PatchColors: no such file or folder '{musicTarget}'")
+        return
 
     onsongColor = re.compile(r"&blue:?")
 

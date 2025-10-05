@@ -47,7 +47,7 @@ def main():
         if untracked_chopro_files:
             print("Untracked .chopro/.cho files:", untracked_chopro_files)
     else:
-        PatchTextColor.PatchColors()
+        PatchTextColor.PatchColors(musictarget)
         GenPDF.createPDFs(musictarget, pagesize, showchords)
         repo.git.restore("*.chopro")
         repo.git.restore("*.cho")
