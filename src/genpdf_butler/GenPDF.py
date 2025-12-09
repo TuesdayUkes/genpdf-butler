@@ -3,7 +3,6 @@ import subprocess
 from importlib import resources
 from pathlib import Path
 
-
 CHORDPRO_EXTRA_CONFIG = str(
     resources.files("genpdf_butler").joinpath("chordpro_config.json")
 )
