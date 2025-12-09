@@ -5,7 +5,7 @@ import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
-from genpdf_butler.GenPDF import createPDFs
+from genpdf_butler.GenPDF import CHORDPRO_EXTRA_CONFIG, createPDFs
 
 
 class TestCreatePDFs:
@@ -21,6 +21,10 @@ class TestCreatePDFs:
             mock_print.assert_called_once_with(
                 "no such file or folder 'nonexistent'"
             )
+
+    def test_extra_config_file_exists(self):
+        """Ensure the extra chordpro config file is bundled."""
+        assert Path(CHORDPRO_EXTRA_CONFIG).is_file()
 
     def test_ext_function_returns_lowercase_extension(self):
         """Test that the internal ext function returns lowercase extensions."""
@@ -57,6 +61,7 @@ class TestCreatePDFs:
             "chordpro",
             "--config=ukulele",
             "--config=ukulele-ly",
+            f"--config={CHORDPRO_EXTRA_CONFIG}",
             "--define=pdf:diagrams:show=true",
             "--define=settings:inline-chords=true",
             "--define=pdf:even-odd-pages=0",
@@ -93,6 +98,7 @@ class TestCreatePDFs:
             "chordpro",
             "--config=ukulele",
             "--config=ukulele-ly",
+            f"--config={CHORDPRO_EXTRA_CONFIG}",
             "--define=pdf:diagrams:show=false",
             "--define=settings:inline-chords=true",
             "--define=pdf:even-odd-pages=0",

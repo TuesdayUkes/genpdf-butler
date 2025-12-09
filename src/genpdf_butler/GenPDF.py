@@ -1,6 +1,12 @@
 import os
 import subprocess
+from importlib import resources
 from pathlib import Path
+
+
+CHORDPRO_EXTRA_CONFIG = str(
+    resources.files("genpdf_butler").joinpath("chordpro_config.json")
+)
 
 
 def createPDFs(musicTarget, pagesize, showchords):
@@ -8,6 +14,7 @@ def createPDFs(musicTarget, pagesize, showchords):
         "chordpro",
         "--config=ukulele",
         "--config=ukulele-ly",
+        f"--config={CHORDPRO_EXTRA_CONFIG}",
         "--define=pdf:diagrams:show=" + showchords,
         "--define=settings:inline-chords=true",
         "--define=pdf:even-odd-pages=0",
