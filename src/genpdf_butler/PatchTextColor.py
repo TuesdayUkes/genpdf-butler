@@ -2,6 +2,31 @@ import os
 import re
 from pathlib import Path
 
+COMMENT_DIRECTIVE_LABELS = {
+    "key": "Key",
+    "time": "Time",
+    "tempo": "Tempo",
+}
+
+
+def _translate_comment_directive(line):
+    directive_match = re.match(
+        (
+            r"^(?P<indent>\s*)\{(?P<directive>key|time|tempo)"
+            r"\s*:\s*(?P<value>.*?)\s*\}\s*$"
+        ),
+        line,
+        re.IGNORECASE,
+    )
+    if not directive_match:
+        return line
+
+    directive = directive_match.group("directive").lower()
+    label = COMMENT_DIRECTIVE_LABELS[directive]
+    value = directive_match.group("value").strip()
+    comment_text = label if not value else f"{label}: {value}"
+    return f"{directive_match.group('indent')}{{comment: {comment_text}}}\n"
+
 
 def PatchColors(musicTarget):
     # Function to get file extension (same as in GenPDF.py)
@@ -41,6 +66,8 @@ def PatchColors(musicTarget):
             addColor = False
             with open(p, mode="w", encoding="utf-8") as f:
                 for line in srcLines:
+                    line = _translate_comment_directive(line)
+
                     if not addColor and onsongColor.search(line):
                         addColor = True
                         f.write("{textcolour: blue}\n")

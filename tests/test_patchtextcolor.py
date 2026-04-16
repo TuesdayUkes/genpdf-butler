@@ -63,3 +63,58 @@ class TestPatchColors:
 
         finally:
             Path(tmp_file_path).unlink()
+
+    def test_translates_key_time_and_tempo_directives_to_comments(self):
+        """OnSong key/time/tempo directives should become comments."""
+        test_content = "{key: Bb}\n{time: 4/4}\n{tempo: 120 bpm}\n"
+
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".chopro", delete=False, encoding="utf-8"
+        ) as tmp_file:
+            tmp_file.write(test_content)
+            tmp_file_path = tmp_file.name
+
+        try:
+            PatchColors(tmp_file_path)
+
+            modified_content = Path(tmp_file_path).read_text(encoding="utf-8")
+
+            assert "{comment: Key: Bb}" in modified_content
+            assert "{comment: Time: 4/4}" in modified_content
+            assert "{comment: Tempo: 120 bpm}" in modified_content
+            assert "{key:" not in modified_content
+            assert "{time:" not in modified_content
+            assert "{tempo:" not in modified_content
+        finally:
+            Path(tmp_file_path).unlink()
+
+    def test_translates_directives_while_preserving_blue_text_patch(self):
+        """Directive translation should coexist with blue text conversion."""
+        test_content = (
+            "{key: D}\n"
+            "{time: 3/4}\n"
+            "&blue: Lead line\n"
+            "Back to normal\n"
+            "{tempo: Moderato}\n"
+        )
+
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".cho", delete=False, encoding="utf-8"
+        ) as tmp_file:
+            tmp_file.write(test_content)
+            tmp_file_path = tmp_file.name
+
+        try:
+            PatchColors(tmp_file_path)
+
+            modified_content = Path(tmp_file_path).read_text(encoding="utf-8")
+
+            assert "{comment: Key: D}" in modified_content
+            assert "{comment: Time: 3/4}" in modified_content
+            assert "{comment: Tempo: Moderato}" in modified_content
+            assert "{textcolour: blue}" in modified_content
+            assert "{textcolour}\n" in modified_content
+            assert "Lead line" in modified_content
+            assert "&blue:" not in modified_content
+        finally:
+            Path(tmp_file_path).unlink()
