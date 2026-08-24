@@ -24,7 +24,7 @@ def createPDFs(musicTarget, pagesize, showchords):
         "--define=pdf:headspace=50",
         "--define=pdf:footspace=10",
         "--define=pdf:head-first-only=true",
-        "--define=pdf:fonts:chord:color=red",
+        "--define=pdf:fonts:chord:color=blue",
         "--define=pdf:papersize=" + pagesize,
         "--text-font=helvetica",
         "--chord-font=helvetica",

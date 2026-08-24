@@ -7,13 +7,5 @@
         ["", "%{subtitle.3}", ""]
       ]
     },
-
-	// Fonts.
-	"fonts" : {
-	    "chord" : {
-		"color" : "blue",
-	    },
-	},
-
   }
 }
